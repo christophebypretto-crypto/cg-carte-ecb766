@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carte d'activité — Christophe Goubet</title>
+<style>
+  :root {
+    --cg-olive: #98AF24;
+    --cg-olive-soft: #b8c95a;
+    --cg-olive-deep: #6f810e;
+    --pretto-green: #0C806E;
+    --pretto-green-soft: #2ea291;
+    --marketing: #d68a3a;
+    --marketing-soft: #e8b070;
+    --recrut: #6b7fb5;
+    --recrut-soft: #8fa0c8;
+    --cream: #FAF6F2;
+    --cream-2: #f0e9df;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --muted: #8a8275;
+    --danger: #b34a3a;
+    --danger-soft: #d8847a;
+    --warn: #c89642;
+    --ok: #4a8a4a;
+    --shadow: 0 2px 12px rgba(0,0,0,.06);
+    --shadow-hover: 0 10px 30px rgba(0,0,0,.12);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  body { min-height: 100vh; }
+
+  header.page {
+    padding: 32px 48px 22px; border-bottom: 1px solid var(--cream-2);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  }
+  header.page h1 { margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -.5px; }
+  header.page h1 span.accent { color: var(--cg-olive); }
+  header.page .meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .toolbar select, .toolbar input[type=search] {
+    padding: 9px 13px; border: 1px solid var(--cream-2); border-radius: 10px;
+    background: white; font-size: 13px; color: var(--ink); font-family: inherit;
+  }
+  .toolbar input[type=search] { min-width: 220px; }
+  .toolbar .btn {
+    padding: 9px 15px; border: 1px solid var(--cg-olive); border-radius: 10px;
+    background: var(--cg-olive); color: white; font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+  .toolbar .btn:hover { background: var(--cg-olive-deep); border-color: var(--cg-olive-deep); }
+  .toolbar .btn.ghost { background: white; color: var(--cg-olive-deep); }
+
+  main { padding: 28px 48px 80px; max-width: 1400px; margin: 0 auto; }
+
+  /* ----- Stats ribbon (small, above axes) ----- */
+  .stats {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 28px;
+  }
+  .stat {
+    background: white; border-radius: 12px; padding: 12px 14px;
+    box-shadow: var(--shadow); border-left: 3px solid var(--cg-olive);
+  }
+  .stat .label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+  .stat .value { font-size: 22px; font-weight: 700; margin-top: 2px; }
+  .stat .sub { font-size: 11px; color: var(--ink-soft); margin-top: 1px; }
+
+  /* ----- 4 main axes grid ----- */
+  .axes {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+  }
+  .axis {
+    background: white; border-radius: var(--radius);
+    box-shadow: var(--shadow); cursor: pointer;
+    transition: box-shadow .25s, transform .25s;
+    overflow: hidden; position: relative;
+    border: 2px solid transparent;
+  }
+  .axis:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .axis.open { grid-column: 1 / -1; transform: none; box-shadow: var(--shadow-hover); cursor: default; }
+  .axis.open:hover { transform: none; }
+
+  .axis-head {
+    padding: 28px 30px;
+    display: flex; align-items: center; gap: 22px;
+    position: relative;
+  }
+  .axis-icon {
+    width: 72px; height: 72px; border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; flex-shrink: 0;
+    background: var(--cream);
+  }
+  .axis.rd          .axis-icon { background: rgba(152, 175, 36, .14); color: var(--cg-olive-deep); }
+  .axis.ventes      .axis-icon { background: rgba(12, 128, 110, .12); color: var(--pretto-green); }
+  .axis.marketing   .axis-icon { background: rgba(214, 138, 58, .14); color: #a06424; }
+  .axis.recrutement .axis-icon { background: rgba(107, 127, 181, .14); color: #44558a; }
+  .axis.decide      .axis-icon { background: rgba(179, 74, 58, .12); color: var(--danger); }
+
+  .axis.rd          { border-color: rgba(152, 175, 36, .25); }
+  .axis.ventes      { border-color: rgba(12, 128, 110, .22); }
+  .axis.marketing   { border-color: rgba(214, 138, 58, .25); }
+  .axis.recrutement { border-color: rgba(107, 127, 181, .25); }
+  .axis.decide      { border-color: rgba(179, 74, 58, .22); }
+
+  .axis-info { flex: 1; min-width: 0; }
+  .axis-info h2 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.3px; }
+  .axis-info .sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .axis-stats {
+    display: flex; gap: 18px; margin-top: 14px; align-items: center;
+  }
+  .axis-stat { font-size: 12px; color: var(--ink-soft); }
+  .axis-stat strong { font-size: 17px; color: var(--ink); display: block; line-height: 1.2; font-weight: 700; }
+  .axis-progress {
+    flex: 1; height: 8px; background: var(--cream-2); border-radius: 4px; overflow: hidden;
+    min-width: 80px; margin-left: 4px;
+  }
+  .axis-progress > span { display: block; height: 100%; border-radius: 4px; transition: width .4s ease; }
+  .axis.rd          .axis-progress > span { background: var(--cg-olive); }
+  .axis.ventes      .axis-progress > span { background: var(--pretto-green); }
+  .axis.marketing   .axis-progress > span { background: var(--marketing); }
+  .axis.recrutement .axis-progress > span { background: var(--recrut); }
+  .axis.decide      .axis-progress > span { background: var(--danger); }
+
+  .chevron {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--ink-soft); flex-shrink: 0;
+    transition: transform .25s, background .25s;
+  }
+  .axis.open .chevron { transform: rotate(180deg); background: var(--cg-olive); color: white; }
+
+  .axis-body {
+    max-height: 0; overflow: hidden; transition: max-height .35s ease;
+    background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.02));
+  }
+  .axis.open .axis-body { max-height: 5000px; }
+  .axis-body-inner { padding: 6px 30px 30px; }
+
+  .projects { display: flex; flex-direction: column; gap: 10px; }
+  .project {
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 14px;
+    padding: 14px 16px; border-radius: 12px; background: var(--cream); cursor: pointer;
+    transition: background .15s, transform .15s, box-shadow .15s;
+    border: 1px solid transparent;
+  }
+  .project:hover { background: white; box-shadow: var(--shadow); border-color: var(--cream-2); }
+  .project .name { font-size: 15px; font-weight: 600; }
+  .project .next { font-size: 12px; color: var(--ink-soft); grid-column: 1 / -1; }
+  .project .next::before { content: "→ "; color: var(--cg-olive); font-weight: 700; }
+  .project .bar {
+    grid-column: 1 / -1; height: 6px; background: var(--cream-2); border-radius: 3px; overflow: hidden; margin-top: 6px;
+  }
+  .project .bar > span { display: block; height: 100%; background: var(--cg-olive); border-radius: 3px; }
+  .project .pct { font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .project .tags { display: flex; gap: 5px; flex-wrap: wrap; grid-column: 1 / -1; margin-top: 6px; }
+  .tag {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px; background: white;
+    border: 1px solid var(--cream-2); color: var(--ink-soft); text-transform: uppercase; letter-spacing: .4px;
+  }
+  .tag.zombie { background: #fdecea; color: var(--danger); border-color: #f5c6c0; }
+  .tag.hot    { background: #fff4dc; color: #8a6210; border-color: #f0d999; }
+  .tag.done   { background: #e7f2e7; color: var(--ok); border-color: #c2dfc2; }
+  .tag.blocked{ background: #efeef5; color: #5a5a82; border-color: #d6d4e2; }
+
+  .axis.ventes      .project .bar > span { background: var(--pretto-green); }
+  .axis.marketing   .project .bar > span { background: var(--marketing); }
+  .axis.recrutement .project .bar > span { background: var(--recrut); }
+  .axis.decide      .project .bar > span { background: var(--danger); }
+
+  /* Décide section : full width, smaller header */
+  .axis.decide { grid-column: 1 / -1; }
+  .axis.decide .axis-head { padding: 22px 30px; }
+  .axis.decide .axis-icon { width: 56px; height: 56px; font-size: 28px; border-radius: 14px; }
+  .axis.decide .axis-info h2 { font-size: 19px; }
+
+  /* Modal */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(20,18,14,.5); display: none;
+    align-items: center; justify-content: center; padding: 20px; z-index: 100;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: var(--radius); padding: 30px 32px;
+    max-width: 640px; width: 100%; max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,.3);
+  }
+  .modal h3 { margin: 0 0 4px; font-size: 24px; letter-spacing: -.3px; }
+  .modal .axis-pill {
+    display: inline-block; font-size: 11px; padding: 4px 11px; border-radius: 12px;
+    background: var(--cream); color: var(--ink-soft); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 16px; font-weight: 600;
+  }
+  .modal .row { display: grid; grid-template-columns: 130px 1fr; gap: 10px 18px; padding: 12px 0; border-top: 1px solid var(--cream-2); font-size: 14px; }
+  .modal .row:first-of-type { border-top: none; }
+  .modal .row .key { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .8px; padding-top: 2px; font-weight: 600; }
+  .modal .row .val { color: var(--ink); line-height: 1.55; }
+  .modal .close { float: right; background: none; border: none; font-size: 26px; cursor: pointer; color: var(--muted); padding: 0; line-height: 1; }
+  .modal .close:hover { color: var(--ink); }
+  .modal a { color: var(--cg-olive-deep); }
+
+  @media (max-width: 900px) {
+    .axes { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    header.page { padding: 20px 22px; }
+    main { padding: 18px 22px 40px; }
+    .axis-head { padding: 20px 18px; gap: 14px; }
+    .axis-icon { width: 56px; height: 56px; font-size: 28px; }
+    .axis-info h2 { font-size: 20px; }
+    .axis-body-inner { padding: 6px 18px 22px; }
+  }
+</style>
+</head>
+<body>
+<header class="page">
+  <div>
+    <h1>Carte d'activité <span class="accent">— Christophe Goubet</span></h1>
+    <div class="meta">Clique sur un axe pour le déployer • <span id="todayDate"></span></div>
+  </div>
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="Rechercher un projet…" />
+    <select id="sortBy">
+      <option value="priority">Trier : priorité</option>
+      <option value="progress-desc">% avancement ↓</option>
+      <option value="progress-asc">% avancement ↑</option>
+      <option value="name">Nom A→Z</option>
+    </select>
+    <button class="btn ghost" id="toggleZombies">Cacher les zombies</button>
+  </div>
+</header>
+
+<main>
+  <section class="stats" id="stats"></section>
+  <section class="axes" id="axes"></section>
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — édite ici quand un projet avance ou qu'un nouveau démarre.
+   ============================================================ */
+const PROJECTS = [
+  /* ---------- R&D avec Claude Code ---------- */
+  {
+    id: 'package-100k', axis: 'rd', priority: 1, progress: 55, status: 'wip',
+    name: 'Package 100K (ex Studio Digital)',
+    next: "Verrouiller les 3 tiers (29/59/99€) + livrable pilote Réjinal/Maude",
+    description: "Pack complet courtiers : site + carte virtuelle + plaquette + signature + posts RS + articles SEO. Cible : 30 courtiers fin 2026.",
+    memory: 'memory/project_studio_pretto_galaxie.md',
+    tags: ['HOT', 'pilote Réjinal+Maude'],
+  },
+  {
+    id: 'formation-100k', axis: 'rd', priority: 1, progress: 30, status: 'wip',
+    name: 'Formation 100K',
+    next: "Décider : finir le module 1 cette semaine ou re-scoper",
+    description: "Formation associée au Package 100K. Mentionnée comme chantier qui traîne — risque zombie.",
+    tags: ['HOT', 'risque enlisement'],
+  },
+  {
+    id: 'simulateurs-myriam', axis: 'rd', priority: 2, progress: 70, status: 'wip',
+    name: 'Pack 5 simulateurs crédit (Myriam → équipe)',
+    next: "Livrer le 1er cas Myriam (site Simplebo), puis dupliquer pour équipe Galaxie",
+    description: "5 simulateurs HTML/CSS/JS, charte Praetor Finance pour Myriam, évolutif vers offre équipe.",
+    memory: 'memory/project_simulateurs_equipe.md',
+    tags: [],
+  },
+  {
+    id: 'site-perso', axis: 'rd', priority: 2, progress: 10, status: 'idea',
+    name: 'Refonte christophegoubetbypretto.fr',
+    next: "Choisir template Astro de référence + lister contenus à migrer",
+    description: "Refonte avec stack standard sites courtiers : Astro + Decap CMS + Cloudflare Pages.",
+    memory: 'memory/strategy_sites_courtiers_stack.md',
+    tags: [],
+  },
+  {
+    id: 'site-suivi-prets-macles', axis: 'rd', priority: 2, progress: 5, status: 'idea',
+    name: 'Site interne suivi prêts pour Macles',
+    next: "Définir : qui voit quoi ? auth ? données depuis quel système ?",
+    description: "Permettre aux 80 agents Macles de suivre l'avancée des dossiers de prêt qu'ils nous envoient.",
+    memory: 'memory/reference_macles.md',
+    tags: ['Macles'],
+  },
+  {
+    id: 'articles-auto', axis: 'rd', priority: 3, progress: 15, status: 'idea',
+    name: 'Pipeline articles SEO automatiques',
+    next: "Spec : sources, fréquence, validation humaine ou full auto ?",
+    description: "Pipeline de publication SEO auto sur le site.",
+    tags: [],
+  },
+  {
+    id: 'bdd-bancaire-tools', axis: 'rd', priority: 3, progress: 60, status: 'wip',
+    name: 'Outils BDD bancaire (Airtable + Slack)',
+    next: "Coder MCP Airtable → branchement direct depuis Claude / Jarvis",
+    description: "Capitaliser sur l'Airtable BDD Banques Pretto Galaxie (190 banques) + canal Slack #entraide. Lien avec Jarvis.",
+    memory: 'memory/project_jarvis_assistant.md',
+    tags: [],
+  },
+  {
+    id: 'jarvis', axis: 'rd', priority: 3, progress: 20, status: 'idea',
+    name: 'Jarvis — assistant personnel always-on',
+    next: "Choisir 1er use case prioritaire (Gmail ? Slack ? Calendar ?) et coder l'intégration",
+    description: "App desktop type Jarvis branchée sur Gmail/Slack/Calendar/Drive/site WP/stats Pretto, voix UK ElevenLabs.",
+    memory: 'memory/project_jarvis_assistant.md',
+    tags: ['long terme'],
+  },
+
+  /* ---------- Ventes ---------- */
+  {
+    id: 'partenariat-macles', axis: 'ventes', priority: 1, progress: 60, status: 'wip',
+    name: 'Partenariat Macles (80 agents immo)',
+    next: "Faire passer le partenariat de signé à opérationnel : 1er dossier traçable",
+    description: "Réseau de 80 agents immobiliers, apport d'affaires. 3 chantiers connexes : WhatsApp régulier, site suivi prêts, fiche porte.",
+    memory: 'memory/reference_macles.md',
+    tags: ['HOT'],
+  },
+  {
+    id: 'fiche-google-saintdenis', axis: 'ventes', priority: 2, progress: 0, status: 'idea',
+    name: 'Fiche établissement Google Saint-Denis',
+    next: "Créer la fiche Google Business Profile et la connecter au site",
+    description: "Nouvel établissement Saint-Denis à référencer.",
+    tags: [],
+  },
+  {
+    id: 'bdd-banques-galaxie', axis: 'ventes', priority: 2, progress: 80, status: 'wip',
+    name: 'BDD Banques Pretto Galaxie',
+    next: "Mettre à jour le scoring des 190 banques + onboarder l'équipe sur l'usage NotebookLM",
+    description: "190 banques (9 en ligne, 74 nationales, 107 régionales) dans NotebookLM + Airtable. Outil d'aide à la décision pour les courtiers.",
+    tags: ['référentiel'],
+  },
+  {
+    id: 'stats-conseillers', axis: 'ventes', priority: 3, progress: 5, status: 'idea',
+    name: 'Tableau de bord ventes / conseillers',
+    next: "Lister : quelles métriques je veux voir ? source des données ?",
+    description: "Statistiques de ventes par conseiller de l'équipe Pretto Galaxie + axes de développement vente.",
+    tags: ['à scoper'],
+  },
+
+  /* ---------- Marketing ---------- */
+  {
+    id: 'posts-rs', axis: 'marketing', priority: 1, progress: 25, status: 'wip',
+    name: 'Publications réseaux sociaux',
+    next: "Définir cadence (3/semaine ?) et qui poste — Élodie Carré sur le montage",
+    description: "Insta, Facebook, LinkedIn, TikTok perso. Élodie Carré en charge du montage vidéo / contenus.",
+    tags: ['HOT'],
+  },
+  {
+    id: 'momentum-pizza', axis: 'marketing', priority: 2, progress: 40, status: 'wip',
+    name: 'Vidéos & photos Momentum Pizza',
+    next: "Finaliser le montage avec Élodie Carré et publier le 1er format",
+    description: "Support de communication issu de l'événement. Fiches personnes dans momentum-pizza/PROFILS.md.",
+    tags: [],
+  },
+  {
+    id: 'whatsapp-macles', axis: 'marketing', priority: 2, progress: 20, status: 'wip',
+    name: 'Publications WhatsApp Macles',
+    next: "Établir un calendrier éditorial mensuel (taux d'intérêt, focus banque, cas client)",
+    description: "Contenus réguliers pour le groupe WhatsApp des 80 agents Macles.",
+    memory: 'memory/reference_macles.md',
+    tags: ['Macles'],
+  },
+  {
+    id: 'fiche-porte-macles', axis: 'marketing', priority: 3, progress: 0, status: 'idea',
+    name: 'Fiche porte / PLV agences Macles',
+    next: "Brief design + impression — pas démarré",
+    description: "Affichette à coller dans les agences partenaires Macles.",
+    memory: 'memory/reference_macles.md',
+    tags: ['Macles'],
+  },
+  {
+    id: 'articles-site-perso', axis: 'marketing', priority: 3, progress: 10, status: 'idea',
+    name: 'Articles SEO sur le site perso',
+    next: "Dépend du pipeline articles auto (R&D) — ou lancer manuellement en attendant ?",
+    description: "Stratégie de contenu SEO sur christophegoubetbypretto.fr.",
+    tags: ['dépend de R&D'],
+  },
+
+  /* ---------- Recrutement & Mentoring ---------- */
+  {
+    id: 'mentoring-pilotes', axis: 'recrutement', priority: 1, progress: 30, status: 'wip',
+    name: 'Pilotes Package 100K — Réjinal & Maude',
+    next: "Caler les 2 onboardings (6 mois gratuits) — KPIs de réussite à définir",
+    description: "Premiers cas d'usage du Package 100K, gratuits 6 mois, en échange de retours produit.",
+    memory: 'memory/project_studio_pretto_galaxie.md',
+    tags: ['HOT'],
+  },
+  {
+    id: 'mentoring-elodie-carre', axis: 'recrutement', priority: 2, progress: 50, status: 'wip',
+    name: 'Élodie Carré — alternante',
+    next: "Lui transmettre l'usage de Claude Code + setup OneDrive symlinks sur son PC Windows",
+    description: "Alternante en charge du montage vidéo / contenus RS. Setup compte Anthropic Max partagé en cours.",
+    memory: 'memory/user_team_elodie_carre.md',
+    tags: [],
+  },
+  {
+    id: 'mentoring-equipe-galaxie', axis: 'recrutement', priority: 2, progress: 25, status: 'wip',
+    name: 'Mentoring équipe Pretto Galaxie',
+    next: "Identifier les 2-3 courtiers à mentorer en priorité (au-delà de Réjinal/Maude)",
+    description: "Mentoring courtiers de l'équipe Pretto Galaxie — utiliser le Package 100K comme support.",
+    tags: [],
+  },
+  {
+    id: 'recrutement-cibles', axis: 'recrutement', priority: 3, progress: 0, status: 'idea',
+    name: 'Recrutement nouveaux courtiers',
+    next: "Définir le profil cible + canaux (LinkedIn ? recommandation ? mandataires ?)",
+    description: "Lien avec scraping mandataires immo (IAD/SAFTI/Capi/Optimhome).",
+    memory: 'memory/reference_scraping_mandataires_immo.md',
+    tags: ['à scoper'],
+  },
+
+  /* ---------- À décider — finir ou abandonner ---------- */
+  {
+    id: 'simulateur-credit-municipal-toulon', axis: 'decide', priority: 4, progress: 30, status: 'zombie',
+    name: 'Simulateur Crédit Municipal de Toulon',
+    next: "DÉCISION : finir et le vendre, ou archiver ?",
+    description: "Projet cité comme zombie : commencé mais pas fini.",
+    tags: ['ZOMBIE'],
+  },
+  {
+    id: 'tiktok-perso', axis: 'decide', priority: 4, progress: 15, status: 'zombie',
+    name: 'TikTok perso (computer-use)',
+    next: "DÉCISION : assumer que c'est un canal stratégique ou arrêter d'y penser ?",
+    description: "Évoqué dans le projet Jarvis — sans plan d'attaque clair.",
+    tags: ['à clarifier'],
+  },
+];
+
+const AXES = {
+  rd:          { title: 'R&D — Claude Code',                title_short: 'R&D',           sub: "Ce que je construis avec l'IA",         icon: '⚙' },
+  ventes:      { title: 'Ventes',                            title_short: 'Ventes',        sub: 'Conseillers, BDD, partenariats',         icon: '💼' },
+  marketing:   { title: 'Marketing',                         title_short: 'Marketing',     sub: 'Contenu, RS, visibilité',                icon: '📣' },
+  recrutement: { title: 'Recrutement & Mentoring',           title_short: 'Recrutement',   sub: "Équipe Galaxie & alternance",            icon: '👥' },
+  decide:      { title: 'À décider — finir ou abandonner',   title_short: 'À décider',     sub: "Sortir du flou : on tranche.",           icon: '⚠' },
+};
+
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+
+let state = {
+  search: '',
+  sort: 'priority',
+  hideZombies: false,
+  openAxis: null,
+};
+
+function statusTag(p) {
+  if (p.status === 'zombie') return { cls: 'zombie', label: 'zombie' };
+  if (p.status === 'done')   return { cls: 'done',   label: 'terminé' };
+  if (p.status === 'blocked')return { cls: 'blocked',label: 'bloqué' };
+  return null;
+}
+
+function renderStats() {
+  const all = PROJECTS;
+  const wip = all.filter(p => p.status === 'wip').length;
+  const zombies = all.filter(p => p.status === 'zombie' || p.axis === 'decide').length;
+  const hot = all.filter(p => (p.tags || []).includes('HOT')).length;
+  const avg = Math.round(all.reduce((s, p) => s + p.progress, 0) / all.length);
+  const finished = all.filter(p => p.progress >= 100).length;
+
+  $('#stats').innerHTML = `
+    <div class="stat"><div class="label">Projets total</div><div class="value">${all.length}</div><div class="sub">sur 4 axes + décision</div></div>
+    <div class="stat" style="border-left-color: var(--cg-olive-deep)"><div class="label">En cours</div><div class="value">${wip}</div><div class="sub">activement travaillés</div></div>
+    <div class="stat" style="border-left-color: var(--warn)"><div class="label">Hot</div><div class="value">${hot}</div><div class="sub">priorité immédiate</div></div>
+    <div class="stat" style="border-left-color: var(--danger)"><div class="label">À trancher</div><div class="value">${zombies}</div><div class="sub">zombies / à décider</div></div>
+    <div class="stat" style="border-left-color: var(--pretto-green)"><div class="label">Avancement moyen</div><div class="value">${avg}%</div><div class="sub">${finished} terminés</div></div>
+  `;
+}
+
+function projectCard(p) {
+  const st = statusTag(p);
+  const tags = [
+    ...(st ? [`<span class="tag ${st.cls}">${st.label}</span>`] : []),
+    ...(p.tags || []).map(t => {
+      if (t === 'HOT') return `<span class="tag hot">hot</span>`;
+      if (t === 'ZOMBIE') return `<span class="tag zombie">zombie</span>`;
+      return `<span class="tag">${t}</span>`;
+    }),
+  ].join('');
+  return `
+    <div class="project" data-id="${p.id}">
+      <div class="name">${p.name}</div>
+      <div class="pct">${p.progress}%</div>
+      <div class="next">${p.next}</div>
+      <div class="bar"><span style="width:${p.progress}%"></span></div>
+      ${tags ? `<div class="tags">${tags}</div>` : ''}
+    </div>`;
+}
+
+function sortProjects(list) {
+  const sorted = [...list];
+  if (state.sort === 'priority')           sorted.sort((a,b) => a.priority - b.priority || b.progress - a.progress);
+  else if (state.sort === 'progress-desc') sorted.sort((a,b) => b.progress - a.progress);
+  else if (state.sort === 'progress-asc')  sorted.sort((a,b) => a.progress - b.progress);
+  else if (state.sort === 'name')          sorted.sort((a,b) => a.name.localeCompare(b.name, 'fr'));
+  return sorted;
+}
+
+function axisProjects(axisKey) {
+  const q = state.search.toLowerCase().trim();
+  return PROJECTS.filter(p => {
+    if (p.axis !== axisKey) return false;
+    if (state.hideZombies && (p.status === 'zombie' || p.axis === 'decide')) return false;
+    if (!q) return true;
+    return [p.name, p.description, p.next, ...(p.tags||[])].join(' ').toLowerCase().includes(q);
+  });
+}
+
+function renderAxis(axisKey) {
+  const meta = AXES[axisKey];
+  const items = axisProjects(axisKey);
+  const sorted = sortProjects(items);
+  const avg = items.length ? Math.round(items.reduce((s,p) => s + p.progress, 0) / items.length) : 0;
+  const hot = items.filter(p => (p.tags||[]).includes('HOT')).length;
+  const isOpen = state.openAxis === axisKey;
+
+  const inner = items.length
+    ? sorted.map(projectCard).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px 4px">Aucun projet ici.</div>';
+
+  return `
+    <section class="axis ${axisKey} ${isOpen ? 'open' : ''}" data-axis="${axisKey}">
+      <div class="axis-head">
+        <div class="axis-icon">${meta.icon}</div>
+        <div class="axis-info">
+          <h2>${meta.title}</h2>
+          <div class="sub">${meta.sub}</div>
+          <div class="axis-stats">
+            <div class="axis-stat"><strong>${items.length}</strong>projets</div>
+            <div class="axis-stat"><strong>${hot}</strong>hot</div>
+            <div class="axis-stat" style="flex:1;display:flex;align-items:center;gap:10px">
+              <strong style="display:inline-block;margin-right:8px">${avg}%</strong>
+              <div class="axis-progress"><span style="width:${avg}%"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="chevron">▾</div>
+      </div>
+      <div class="axis-body">
+        <div class="axis-body-inner">
+          <div class="projects">${inner}</div>
+        </div>
+      </div>
+    </section>`;
+}
+
+function renderAxes() {
+  const order = ['rd', 'ventes', 'marketing', 'recrutement', 'decide'];
+  let html = order
+    .filter(a => !(state.hideZombies && a === 'decide'))
+    .map(renderAxis).join('');
+  $('#axes').innerHTML = html;
+
+  $$('.axis').forEach(el => {
+    el.querySelector('.axis-head').addEventListener('click', () => {
+      const key = el.dataset.axis;
+      state.openAxis = state.openAxis === key ? null : key;
+      renderAxes();
+      if (state.openAxis === key) {
+        const opened = document.querySelector(`.axis[data-axis="${key}"]`);
+        if (opened) opened.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+  $$('.project').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      openModal(el.dataset.id);
+    });
+  });
+}
+
+function openModal(id) {
+  const p = PROJECTS.find(x => x.id === id);
+  if (!p) return;
+  const meta = AXES[p.axis];
+  const memLink = p.memory ? `<a href="../${p.memory}">${p.memory}</a>` : '<span style="color:var(--muted)">—</span>';
+  $('#modal').innerHTML = `
+    <button class="close" id="closeModal">×</button>
+    <div class="axis-pill">${meta.icon} ${meta.title}</div>
+    <h3>${p.name}</h3>
+    <div class="row"><div class="key">Avancement</div><div class="val"><div style="height:8px;background:var(--cream-2);border-radius:4px;overflow:hidden;margin-bottom:6px"><span style="display:block;height:100%;width:${p.progress}%;background:var(--cg-olive);border-radius:4px"></span></div><strong>${p.progress}%</strong></div></div>
+    <div class="row"><div class="key">Prochaine action</div><div class="val">${p.next}</div></div>
+    <div class="row"><div class="key">Description</div><div class="val">${p.description}</div></div>
+    <div class="row"><div class="key">Statut</div><div class="val">${p.status}</div></div>
+    <div class="row"><div class="key">Priorité</div><div class="val">${'★'.repeat(6 - p.priority)}${'☆'.repeat(p.priority - 1)} (${p.priority}/5)</div></div>
+    <div class="row"><div class="key">Mémoire liée</div><div class="val">${memLink}</div></div>
+    <div class="row"><div class="key">Tags</div><div class="val">${(p.tags||[]).join(', ') || '—'}</div></div>
+  `;
+  $('#overlay').classList.add('open');
+  $('#closeModal').addEventListener('click', closeModal);
+}
+
+function closeModal() { $('#overlay').classList.remove('open'); }
+
+$('#overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+$('#search').addEventListener('input', e => { state.search = e.target.value; renderAxes(); });
+$('#sortBy').addEventListener('change', e => { state.sort = e.target.value; renderAxes(); });
+$('#toggleZombies').addEventListener('click', e => {
+  state.hideZombies = !state.hideZombies;
+  e.target.textContent = state.hideZombies ? 'Montrer les zombies' : 'Cacher les zombies';
+  renderAxes();
+});
+
+const d = new Date();
+$('#todayDate').textContent = d.toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+renderStats();
+renderAxes();
+</script>
+</body>
+</html>
