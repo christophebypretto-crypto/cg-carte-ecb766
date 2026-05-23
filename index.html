@@ -202,6 +202,76 @@
   .modal .close:hover { color: var(--ink); }
   .modal a { color: var(--cg-olive-deep); }
 
+  /* ===== Wizard "Par quoi je commence ?" ===== */
+  .wiz-overlay {
+    position: fixed; inset: 0; background: rgba(20,18,14,.65); display: none;
+    align-items: center; justify-content: center; padding: 24px; z-index: 200;
+    backdrop-filter: blur(4px);
+  }
+  .wiz-overlay.open { display: flex; }
+  .wiz-card {
+    background: white; border-radius: var(--radius); padding: 36px 40px;
+    max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 30px 80px rgba(0,0,0,.35);
+  }
+  .wiz-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .wiz-step { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .wiz-close { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--muted); padding: 0; line-height: 1; }
+  .wiz-close:hover { color: var(--ink); }
+
+  .wiz-progress { height: 4px; background: var(--cream-2); border-radius: 2px; overflow: hidden; margin-bottom: 28px; }
+  .wiz-progress > span { display: block; height: 100%; background: var(--cg-olive); border-radius: 2px; transition: width .3s ease; }
+
+  .wiz-question { font-size: 24px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 8px; line-height: 1.3; }
+  .wiz-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .wiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .wiz-option {
+    text-align: left; padding: 16px 18px; border-radius: 12px; border: 2px solid var(--cream-2);
+    background: var(--cream); cursor: pointer; font-family: inherit; font-size: 15px; color: var(--ink);
+    transition: border-color .15s, background .15s, transform .1s;
+    line-height: 1.4;
+  }
+  .wiz-option:hover { border-color: var(--cg-olive); background: white; transform: translateY(-1px); }
+  .wiz-option.selected { border-color: var(--cg-olive); background: rgba(152,175,36,.08); }
+
+  .wiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+  .wiz-btn {
+    padding: 10px 22px; border: 1px solid var(--cg-olive); border-radius: 10px;
+    background: var(--cg-olive); color: white; font-size: 14px; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .wiz-btn:hover { background: var(--cg-olive-deep); border-color: var(--cg-olive-deep); }
+  .wiz-btn:disabled { background: var(--cream-2); border-color: var(--cream-2); color: var(--muted); cursor: not-allowed; }
+  .wiz-btn.ghost { background: white; color: var(--ink-soft); border-color: var(--cream-2); }
+  .wiz-btn.ghost:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+  /* Results */
+  .wiz-results h2 { margin: 0 0 8px; font-size: 26px; letter-spacing: -.3px; }
+  .wiz-results .wiz-sub { margin-bottom: 24px; }
+  .wiz-result {
+    display: grid; grid-template-columns: 44px 1fr auto; gap: 14px;
+    padding: 18px 18px; border-radius: 14px; background: var(--cream);
+    margin-bottom: 12px; align-items: start;
+    border: 1px solid var(--cream-2);
+  }
+  .wiz-result.rank-1 { background: linear-gradient(135deg, rgba(152,175,36,.14), rgba(152,175,36,.04)); border-color: var(--cg-olive); }
+  .wiz-result.rank-2 { background: linear-gradient(135deg, rgba(12,128,110,.08), rgba(12,128,110,.02)); border-color: rgba(12,128,110,.3); }
+  .wiz-result.rank-3 { background: linear-gradient(135deg, rgba(107,127,181,.08), rgba(107,127,181,.02)); border-color: rgba(107,127,181,.3); }
+  .wiz-rank {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: white; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 800; color: var(--cg-olive-deep);
+  }
+  .wiz-result.rank-2 .wiz-rank { color: var(--pretto-green); }
+  .wiz-result.rank-3 .wiz-rank { color: var(--recrut); }
+  .wiz-result-body h3 { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
+  .wiz-result-body .next { font-size: 13px; color: var(--ink-soft); margin-bottom: 8px; }
+  .wiz-result-body .next::before { content: "→ "; color: var(--cg-olive); font-weight: 700; }
+  .wiz-reasons { list-style: none; padding: 0; margin: 0; }
+  .wiz-reasons li { font-size: 12px; color: var(--ink-soft); padding-left: 14px; position: relative; line-height: 1.5; }
+  .wiz-reasons li::before { content: "•"; color: var(--cg-olive); position: absolute; left: 0; font-weight: 700; }
+  .wiz-score { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; font-weight: 600; white-space: nowrap; }
+
   @media (max-width: 900px) {
     .axes { grid-template-columns: 1fr; }
     .stats { grid-template-columns: repeat(2, 1fr); }
@@ -211,6 +281,8 @@
     .axis-icon { width: 56px; height: 56px; font-size: 28px; }
     .axis-info h2 { font-size: 20px; }
     .axis-body-inner { padding: 6px 18px 22px; }
+    .wiz-card { padding: 24px 22px; }
+    .wiz-question { font-size: 19px; }
   }
 </style>
 </head>
@@ -228,6 +300,7 @@
       <option value="progress-asc">% avancement ↑</option>
       <option value="name">Nom A→Z</option>
     </select>
+    <button class="btn" id="openWizard">Par quoi je commence ?</button>
     <button class="btn ghost" id="toggleZombies">Cacher les zombies</button>
   </div>
 </header>
@@ -239,6 +312,10 @@
 
 <div class="overlay" id="overlay">
   <div class="modal" id="modal"></div>
+</div>
+
+<div class="wiz-overlay" id="wizOverlay">
+  <div class="wiz-card" id="wizCard"></div>
 </div>
 
 <script>
@@ -680,6 +757,297 @@ $('#todayDate').textContent = d.toLocaleDateString('fr-FR', { weekday:'long', ye
 
 renderStats();
 renderAxes();
+
+/* ============================================================
+   WIZARD "Par quoi je commence ?"
+   ============================================================ */
+
+/* Facets dérivées de chaque projet (déduites des attributs existants).
+   Utilisées pour scorer en fonction des réponses du wizard. */
+function facets(p) {
+  const tags = (p.tags || []).map(t => t.toLowerCase());
+  const name = (p.name || '').toLowerCase();
+  const next = (p.next || '').toLowerCase();
+  const desc = (p.description || '').toLowerCase();
+
+  // Effort estimé pour atteindre une étape concrète
+  const effort = p.status === 'idea' ? 'L'
+               : p.progress >= 75    ? 'S'
+               : p.progress >= 35    ? 'M' : 'L';
+
+  // Énergie requise pour s'y mettre
+  const energy = p.status === 'idea' ? 'high'
+               : p.progress >= 70    ? 'low' : 'med';
+
+  // Mood : ce qu'on cherche à faire
+  const moods = [];
+  if (p.status === 'idea')                                            moods.push('start');
+  if (p.status === 'wip' && p.progress >= 50)                         moods.push('finish');
+  if (['ventes','marketing'].includes(p.axis) && tags.includes('hot')) moods.push('sell');
+  if (p.axis === 'recrutement')                                       moods.push('structure');
+  if (p.axis === 'ventes' || p.axis === 'marketing')                  moods.push('sell');
+  if (p.axis === 'rd' && p.progress < 30)                             moods.push('build');
+
+  // Horizon
+  const horizon = (['ventes','marketing'].includes(p.axis) && (tags.includes('hot') || p.progress >= 50))
+                  ? 'short'
+                  : (p.priority >= 3 && p.progress < 30) ? 'long' : 'mid';
+
+  // Pression à laquelle ça répond
+  const pressures = [];
+  if (tags.includes('hot') && ['ventes','marketing'].includes(p.axis)) pressures.push('cash');
+  if (name.includes('100k') || name.includes('pack') || desc.includes('pack 100k') || desc.includes('pilote')) pressures.push('pack');
+  if (tags.includes('macles')) pressures.push('macles');
+  if (p.axis === 'rd' && !name.includes('100k') && !name.includes('pack')) pressures.push('tools');
+  if (p.axis === 'recrutement') pressures.push('team');
+
+  // Quick win : avancé, faible effort, démontrable
+  const quickWin = p.progress >= 70 && effort === 'S';
+  // Showable : on peut montrer un truc à la fin de la session
+  const showable = p.progress >= 70 || (p.status === 'wip' && p.progress >= 50 && effort !== 'L');
+  // Stuck : demande une décision pour avancer
+  const stuck = /^(décision|décider|choisir|définir|trancher)/i.test(p.next || '');
+  // À risque d'enlisement
+  const risk = tags.includes('risque enlisement') || (p.status === 'wip' && p.progress < 30);
+
+  return { effort, energy, moods, horizon, pressures, quickWin, showable, stuck, risk, tags };
+}
+
+/* Questions du wizard.
+   Chaque option a un dict `effects` qui boost des facets précises.
+   Effects sont des fonctions (project, facets) → poids.
+   Permet une logique fine au-delà du simple matching. */
+const QUESTIONS = [
+  {
+    id: 'time',
+    text: "Là, t'as combien de temps devant toi ?",
+    sub: "Soyez honnête — l'objectif c'est un truc faisable, pas un truc parfait.",
+    options: [
+      {
+        label: "Une heure max",
+        score: (p, f) => (f.effort === 'S' ? 25 : f.effort === 'M' ? 5 : -20) + (f.quickWin ? 15 : 0),
+      },
+      {
+        label: "Une demi-journée",
+        score: (p, f) => (f.effort === 'M' ? 25 : f.effort === 'S' ? 10 : -5),
+      },
+      {
+        label: "Une vraie journée pleine",
+        score: (p, f) => (f.effort === 'L' ? 25 : f.effort === 'M' ? 10 : -5),
+      },
+    ],
+  },
+  {
+    id: 'energy',
+    text: "T'es comment, là ?",
+    sub: "Le wizard adapte à ton état, pas à ton calendrier.",
+    options: [
+      {
+        label: "Frais. J'attaque un truc neuf, ça m'éclate.",
+        score: (p, f) => (f.energy === 'high' ? 20 : 0) + (p.status === 'idea' ? 15 : 0),
+      },
+      {
+        label: "Posé. Je veux avancer un truc déjà cadré.",
+        score: (p, f) => (f.energy === 'med' ? 20 : 0) + (p.status === 'wip' && p.progress >= 30 && p.progress < 80 ? 15 : 0),
+      },
+      {
+        label: "Cuit. Mode quick win, juste sortir un truc.",
+        score: (p, f) => (f.quickWin ? 30 : 0) + (f.energy === 'low' ? 15 : 0) - (p.status === 'idea' ? 20 : 0),
+      },
+    ],
+  },
+  {
+    id: 'mood',
+    text: "Tu sens quoi : finir, démarrer, vendre, structurer ?",
+    sub: "Une seule envie domine à un instant T.",
+    options: [
+      {
+        label: "Finir un truc qui traîne",
+        score: (p, f) => (f.moods.includes('finish') ? 25 : 0) + (f.risk ? 15 : 0),
+      },
+      {
+        label: "Démarrer un nouveau projet, carré",
+        score: (p, f) => (f.moods.includes('start') || f.moods.includes('build') ? 25 : 0),
+      },
+      {
+        label: "Faire rentrer du cash / vendre",
+        score: (p, f) => (f.moods.includes('sell') ? 30 : 0) + (f.pressures.includes('cash') ? 15 : 0),
+      },
+      {
+        label: "Structurer l'équipe / déléguer",
+        score: (p, f) => (f.moods.includes('structure') ? 30 : 0),
+      },
+    ],
+  },
+  {
+    id: 'pressure',
+    text: "Ce qui te pèse le plus en arrière-plan, c'est quoi ?",
+    sub: "Ton intuition compte plus que ta to-do.",
+    options: [
+      {
+        label: "Du cash, maintenant",
+        score: (p, f) => (f.pressures.includes('cash') ? 30 : 0) + (f.horizon === 'short' ? 10 : 0),
+      },
+      {
+        label: "Le Pack 100K doit avancer",
+        score: (p, f) => (f.pressures.includes('pack') ? 30 : 0),
+      },
+      {
+        label: "Macles / les 80 agents",
+        score: (p, f) => (f.pressures.includes('macles') ? 35 : 0),
+      },
+      {
+        label: "Mes outils internes / R&D",
+        score: (p, f) => (f.pressures.includes('tools') ? 25 : 0) + (p.axis === 'rd' ? 5 : 0),
+      },
+    ],
+  },
+  {
+    id: 'outcome',
+    text: "À la fin de la session, t'aimerais quoi exactement ?",
+    sub: "L'effet psychologique compte autant que le résultat.",
+    options: [
+      {
+        label: "Un truc à montrer ce soir",
+        score: (p, f) => (f.showable ? 25 : 0) + (f.quickWin ? 15 : 0),
+      },
+      {
+        label: "Un step propre sur un truc important",
+        score: (p, f) => (p.priority === 1 ? 20 : p.priority === 2 ? 10 : 0) + (p.status === 'wip' ? 10 : 0),
+      },
+      {
+        label: "Casser un blocage, sortir d'une impasse",
+        score: (p, f) => (f.stuck ? 35 : 0) + (f.risk ? 10 : 0),
+      },
+    ],
+  },
+];
+
+/* Pourquoi ce projet sort en tête ? — génère 2-3 raisons humaines */
+function reasons(p, f, answers) {
+  const r = [];
+  if (p.priority === 1) r.push("Priorité 1 dans ta carte");
+  if ((p.tags||[]).includes('HOT')) r.push("Taggé HOT");
+  if (f.quickWin) r.push(`Quick win : ${p.progress}% déjà fait, effort faible`);
+  if (f.stuck) r.push("Demande juste une décision pour débloquer");
+  if (f.risk) r.push("Risque d'enlisement — bon moment pour le débloquer");
+  if (f.pressures.includes('cash') && answers.find(a => a && a.label && a.label.toLowerCase().includes('cash'))) r.push("Aligné avec ta pression cash");
+  if (f.pressures.includes('pack') && answers.find(a => a && a.label && a.label.toLowerCase().includes('pack 100k'))) r.push("Pousse le Pack 100K");
+  if (f.pressures.includes('macles') && answers.find(a => a && a.label && a.label.toLowerCase().includes('macles'))) r.push("Avance le canal Macles");
+  if (f.showable && answers.find(a => a && a.label && a.label.toLowerCase().includes('montrer'))) r.push("Tu peux le montrer ce soir");
+  if (p.progress >= 75 && p.progress < 100) r.push(`Bientôt fini (${p.progress}%)`);
+  if (p.status === 'idea' && f.moods.includes('start')) r.push("Frais à démarrer carré");
+  if (p.axis === 'recrutement' && answers.find(a => a && a.label && a.label.toLowerCase().includes("structurer"))) r.push("Renforce l'équipe");
+  // Dédup et limite à 3
+  return [...new Set(r)].slice(0, 3);
+}
+
+/* ===== State + render ===== */
+let wizState = { step: 0, answers: [] };
+
+function wizReset() {
+  wizState = { step: 0, answers: [] };
+  renderWizard();
+}
+
+function renderWizard() {
+  const card = $('#wizCard');
+  const total = QUESTIONS.length;
+  if (wizState.step < total) {
+    const q = QUESTIONS[wizState.step];
+    const selected = wizState.answers[wizState.step];
+    const pct = Math.round((wizState.step / total) * 100);
+    card.innerHTML = `
+      <div class="wiz-head">
+        <div class="wiz-step">Question ${wizState.step + 1} / ${total}</div>
+        <button class="wiz-close" id="wizClose" title="Fermer">×</button>
+      </div>
+      <div class="wiz-progress"><span style="width:${pct}%"></span></div>
+      <div class="wiz-question">${q.text}</div>
+      <div class="wiz-sub">${q.sub}</div>
+      <div class="wiz-options" id="wizOptions">
+        ${q.options.map((o, i) => `
+          <button class="wiz-option ${selected && selected.idx === i ? 'selected' : ''}" data-idx="${i}">${o.label}</button>
+        `).join('')}
+      </div>
+      <div class="wiz-nav">
+        <button class="wiz-btn ghost" id="wizPrev" ${wizState.step === 0 ? 'disabled' : ''}>← Précédent</button>
+        <button class="wiz-btn" id="wizNext" ${selected ? '' : 'disabled'}>${wizState.step === total - 1 ? 'Voir la suggestion →' : 'Suivant →'}</button>
+      </div>
+    `;
+    $$('.wiz-option').forEach(el => el.addEventListener('click', () => {
+      const idx = +el.dataset.idx;
+      wizState.answers[wizState.step] = { idx, label: q.options[idx].label, score: q.options[idx].score };
+      renderWizard();
+    }));
+    $('#wizClose').addEventListener('click', closeWizard);
+    $('#wizPrev').addEventListener('click', () => { if (wizState.step > 0) { wizState.step--; renderWizard(); }});
+    $('#wizNext').addEventListener('click', () => { if (wizState.answers[wizState.step]) { wizState.step++; renderWizard(); }});
+  } else {
+    // Résultats
+    const candidates = PROJECTS.filter(p =>
+      p.axis !== 'decide' &&
+      p.status !== 'zombie' &&
+      p.status !== 'blocked' &&
+      p.progress < 100 &&
+      !(p.tags || []).map(t => t.toLowerCase()).includes('bloqué')
+    );
+    const scored = candidates.map(p => {
+      const f = facets(p);
+      let s = 50;
+      s += (4 - p.priority) * 6; // priority weight
+      if ((p.tags || []).includes('HOT')) s += 12;
+      for (const a of wizState.answers) {
+        if (a && typeof a.score === 'function') s += a.score(p, f);
+      }
+      return { p, f, s, reasons: reasons(p, f, wizState.answers) };
+    }).sort((a, b) => b.s - a.s);
+
+    const top = scored.slice(0, 3);
+    const maxScore = Math.max(...scored.map(x => x.s), 1);
+
+    card.innerHTML = `
+      <div class="wiz-head">
+        <div class="wiz-step">Suggestion</div>
+        <button class="wiz-close" id="wizClose" title="Fermer">×</button>
+      </div>
+      <div class="wiz-results">
+        <h2>Voilà par quoi je commencerais.</h2>
+        <div class="wiz-sub">Top 3 calculé sur ta réponse. Click sur un projet pour ouvrir le détail.</div>
+        ${top.map((t, i) => `
+          <div class="wiz-result rank-${i+1}" data-id="${t.p.id}">
+            <div class="wiz-rank">${i + 1}</div>
+            <div class="wiz-result-body">
+              <h3>${t.p.name}</h3>
+              <div class="next">${t.p.next}</div>
+              <ul class="wiz-reasons">
+                ${t.reasons.length ? t.reasons.map(r => `<li>${r}</li>`).join('') : '<li>Match général avec tes réponses</li>'}
+              </ul>
+            </div>
+            <div class="wiz-score">Score<br/>${Math.round(t.s / maxScore * 100)}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="wiz-nav">
+        <button class="wiz-btn ghost" id="wizRestart">↻ Refaire</button>
+        <button class="wiz-btn" id="wizClose2">OK, j'y vais</button>
+      </div>
+    `;
+    $('#wizClose').addEventListener('click', closeWizard);
+    $('#wizClose2').addEventListener('click', closeWizard);
+    $('#wizRestart').addEventListener('click', wizReset);
+    $$('.wiz-result').forEach(el => el.addEventListener('click', () => {
+      closeWizard();
+      openModal(el.dataset.id);
+    }));
+  }
+}
+
+function openWizard() { wizReset(); $('#wizOverlay').classList.add('open'); }
+function closeWizard() { $('#wizOverlay').classList.remove('open'); }
+
+$('#openWizard').addEventListener('click', openWizard);
+$('#wizOverlay').addEventListener('click', e => { if (e.target.id === 'wizOverlay') closeWizard(); });
 </script>
 </body>
 </html>
