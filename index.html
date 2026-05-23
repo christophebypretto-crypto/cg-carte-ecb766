@@ -248,10 +248,10 @@
 const PROJECTS = [
   /* ---------- R&D avec Claude Code ---------- */
   {
-    id: 'package-100k', axis: 'rd', priority: 1, progress: 55, status: 'wip',
+    id: 'package-100k', axis: 'rd', priority: 1, progress: 70, status: 'wip',
     name: 'Package 100K (ex Studio Digital)',
-    next: "Verrouiller les 3 tiers (29/59/99€) + livrable pilote Réjinal/Maude",
-    description: "Pack complet courtiers : site + carte virtuelle + plaquette + signature + posts RS + articles SEO. Cible : 30 courtiers fin 2026.",
+    next: "Onboarder un 3e pilote au-delà de Réjinal/Maude et industrialiser la livraison",
+    description: "Pack complet courtiers : site + carte virtuelle + plaquette + signature + posts RS + articles SEO. Cible : 30 courtiers fin 2026. Pages live : Package Ultime 100K, Souscription, Studio.",
     memory: 'memory/project_studio_pretto_galaxie.md',
     tags: ['HOT', 'pilote Réjinal+Maude'],
   },
@@ -263,10 +263,10 @@ const PROJECTS = [
     tags: ['HOT', 'risque enlisement'],
   },
   {
-    id: 'simulateurs-myriam', axis: 'rd', priority: 2, progress: 70, status: 'wip',
+    id: 'simulateurs-myriam', axis: 'rd', priority: 2, progress: 95, status: 'wip',
     name: 'Pack 5 simulateurs crédit (Myriam → équipe)',
-    next: "Livrer le 1er cas Myriam (site Simplebo), puis dupliquer pour équipe Galaxie",
-    description: "5 simulateurs HTML/CSS/JS, charte Praetor Finance pour Myriam, évolutif vers offre équipe.",
+    next: "Intégrer dans le site Simplebo de Myriam (iframe ?), puis proposer aux autres courtiers Galaxie",
+    description: "5 simulateurs HTML/CSS/JS, charte Praetor Finance pour Myriam. Live à simulateurs-myriam-cg.surge.sh. Évolutif vers offre équipe.",
     memory: 'memory/project_simulateurs_equipe.md',
     tags: [],
   },
@@ -279,10 +279,10 @@ const PROJECTS = [
     tags: [],
   },
   {
-    id: 'site-suivi-prets-macles', axis: 'rd', priority: 2, progress: 5, status: 'idea',
-    name: 'Site interne suivi prêts pour Macles',
-    next: "Définir : qui voit quoi ? auth ? données depuis quel système ?",
-    description: "Permettre aux 80 agents Macles de suivre l'avancée des dossiers de prêt qu'ils nous envoient.",
+    id: 'site-suivi-prets-macles', axis: 'rd', priority: 2, progress: 30, status: 'wip',
+    name: 'Macles Dashboard — suivi prêts',
+    next: "Brancher l'ingestion Airtable au front et auth basique pour les 80 agents",
+    description: "Dashboard de suivi des dossiers apportés par les 80 agents Macles. Sous-modules en cours : airtable, ingestion, parser, bookmarklet, web (CCNLM-main/macles-dashboard/).",
     memory: 'memory/reference_macles.md',
     tags: ['Macles'],
   },
@@ -382,10 +382,10 @@ const PROJECTS = [
 
   /* ---------- Recrutement & Mentoring ---------- */
   {
-    id: 'mentoring-pilotes', axis: 'recrutement', priority: 1, progress: 30, status: 'wip',
+    id: 'mentoring-pilotes', axis: 'recrutement', priority: 1, progress: 60, status: 'wip',
     name: 'Pilotes Package 100K — Réjinal & Maude',
-    next: "Caler les 2 onboardings (6 mois gratuits) — KPIs de réussite à définir",
-    description: "Premiers cas d'usage du Package 100K, gratuits 6 mois, en échange de retours produit.",
+    next: "Définir KPIs de réussite (CA généré, satisfaction) sur les 6 mois et préparer le 3e pilote",
+    description: "Premiers cas d'usage du Package 100K, gratuits 6 mois. Livrés à date : sites (Maude, Beckrich), 3 cartes virtuelles (Réjinal, Lorraine, Nafdat) et 3 signatures mail.",
     memory: 'memory/project_studio_pretto_galaxie.md',
     tags: ['HOT'],
   },
@@ -413,14 +413,80 @@ const PROJECTS = [
     tags: ['à scoper'],
   },
 
-  /* ---------- À décider — finir ou abandonner ---------- */
   {
-    id: 'simulateur-credit-municipal-toulon', axis: 'decide', priority: 4, progress: 30, status: 'zombie',
-    name: 'Simulateur Crédit Municipal de Toulon',
-    next: "DÉCISION : finir et le vendre, ou archiver ?",
-    description: "Projet cité comme zombie : commencé mais pas fini.",
-    tags: ['ZOMBIE'],
+    id: 'cmt-guide', axis: 'rd', priority: 3, progress: 75, status: 'wip',
+    name: 'Guide CMT Courtier (ex-simulateur)',
+    next: "Décliner le format pour 5 autres banques partenaires (template guide réutilisable)",
+    description: "Guide courtier sur le Crédit Municipal de Toulon : conditions, profils acceptés, process. Pivot du zombie 'simulateur CMT' vers un guide pratique. Live à cmt-courtier.surge.sh.",
+    tags: ['pivot zombie réussi'],
   },
+  {
+    id: 'bibliotheque-100k', axis: 'rd', priority: 2, progress: 70, status: 'wip',
+    name: 'Bibliothèque Team 100K',
+    next: "Ajouter les fiches d'objection manquantes et structurer par phase de la méthode",
+    description: "Hub de supports équipe : PDF, fiches, scripts d'objection, cas clients. Live à bibliotheque-100k.surge.sh. Une seule URL à partager.",
+    tags: [],
+  },
+  {
+    id: 'formation-100k-galaxie', axis: 'rd', priority: 2, progress: 80, status: 'wip',
+    name: 'Formation 100K Galaxie (vitrine publique)',
+    next: "Synchroniser le contenu avec le LMS interne et ajouter parcours onboarding mandataire",
+    description: "Version publique de la formation 100K, accessible Galaxie : onboarding courtier + méthode commerciale. Live à formation-100k-galaxie.surge.sh. À distinguer du LMS interne formation-100k-lms.",
+    tags: [],
+  },
+  {
+    id: 'team-100k-pdf', axis: 'rd', priority: 3, progress: 25, status: 'wip',
+    name: 'Team 100K PDF — éditeur Electron',
+    next: "Coder palier 2 : annotations (texte, surligneur, dessin libre)",
+    description: "Alternative gratuite à Wondershare pour l'équipe. App Electron, source dans /Users/q/Developer/team-100k-pdf. Palier 1 livré 2026-05-21 (pages + fusion/split). Paliers 2-4 : annotations, OCR, formulaires.",
+    memory: 'memory/project_team_100k_pdf.md',
+    tags: [],
+  },
+  {
+    id: 'carcasse-bluffe-banquier', axis: 'rd', priority: 3, progress: 40, status: 'wip',
+    name: 'Carcasse 2.0 — Bluffe ton banquier',
+    next: "Déployer sur surge (carcasse-pretto-galaxie.surge.sh) et tester avec 1 banque",
+    description: "Générateur de dossier client format banque : présentation pro qui structure la situation et 'bluffe' le banquier. Source prête dans zou-export/, déploiement à finaliser.",
+    tags: [],
+  },
+  {
+    id: 'souscription-100k', axis: 'marketing', priority: 2, progress: 60, status: 'wip',
+    name: 'Page Souscription Pack 100K',
+    next: "Diffuser le lien aux courtiers Galaxie + brancher le formulaire à un CRM/Airtable",
+    description: "Page de souscription pour que les courtiers Galaxie choisissent leur tier et démarrent leur onboarding Pack 100K. Live à souscription-team-100k.surge.sh.",
+    tags: [],
+  },
+  {
+    id: 'studio-100k', axis: 'marketing', priority: 3, progress: 50, status: 'wip',
+    name: 'Page Studio Team 100K',
+    next: "Compléter le portfolio avec les pilotes Réjinal et Maude (avant/après)",
+    description: "Vitrine du studio interne : ce qu'on produit (sites, vidéos, plaquettes, signatures). Live à studio-team-100k.surge.sh.",
+    tags: [],
+  },
+  {
+    id: 'feu-vert-agent-immo', axis: 'ventes', priority: 2, progress: 70, status: 'wip',
+    name: 'Feu Vert Agent Immo (pour apporteurs)',
+    next: "Pousser auprès des 80 agents Macles + ajouter formulaire de transmission de dossier",
+    description: "Outil de pré-qualification pour agents immo (apport, endettement, reste à vivre) — vérifie l'éligibilité avant transmission. Powered by Nafdat (Mon coach crédit). Live à feu-vert-agent-immo.surge.sh.",
+    tags: ['Macles'],
+  },
+  {
+    id: 'simulateur-mandataire', axis: 'recrutement', priority: 1, progress: 85, status: 'wip',
+    name: 'Simulateur revenus mandataire',
+    next: "Pousser sur LinkedIn / sourcing avec tracking pour mesurer le taux de candidatures",
+    description: "Combien gagne un mandataire courtier Galaxie ? Simule CA, charges, commissions nettes selon statut juridique. Modèle 2026. Live à simulateur-mandataire-pretto.surge.sh. Outil clé pour le recrutement.",
+    tags: ['HOT'],
+  },
+  {
+    id: 'lead-gen-meta-ads', axis: 'ventes', priority: 2, progress: 15, status: 'wip',
+    name: 'Lead-gen équipe (CPL Meta Ads)',
+    next: "Soumettre App Review Meta + récupérer Ad Account ID pour débloquer le MCP Ads",
+    description: "Vente au lead qualifié aux courtiers Galaxie via Meta Lead Ads + visuels Canva. Cadré 2026-05-23. Pilote 1 courtier d'abord. Bloqué : App Review Meta + Ad Account ID. Dossier lead-gen-equipe/.",
+    memory: 'memory/project_offre_lead_gen_equipe.md',
+    tags: ['HOT', 'bloqué'],
+  },
+
+  /* ---------- À décider — finir ou abandonner ---------- */
   {
     id: 'tiktok-perso', axis: 'decide', priority: 4, progress: 15, status: 'zombie',
     name: 'TikTok perso (computer-use)',
