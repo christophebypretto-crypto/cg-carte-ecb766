@@ -63,10 +63,39 @@
   .stat {
     background: white; border-radius: 12px; padding: 12px 14px;
     box-shadow: var(--shadow); border-left: 3px solid var(--cg-olive);
+    cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s;
+    user-select: none;
+  }
+  .stat:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); }
+  .stat.active {
+    background: linear-gradient(135deg, rgba(152,175,36,.10), white);
+    box-shadow: 0 0 0 2px var(--cg-olive), var(--shadow-hover);
   }
   .stat .label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
   .stat .value { font-size: 22px; font-weight: 700; margin-top: 2px; }
   .stat .sub { font-size: 11px; color: var(--ink-soft); margin-top: 1px; }
+
+  /* Section liste filtrée (visible quand on click sur une stat) */
+  .filter-list { background: white; border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow); }
+  .filter-list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .filter-list-head h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+  .filter-list-head .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .filter-list .close-btn {
+    background: var(--cream); border: 1px solid var(--cream-2); border-radius: 10px;
+    padding: 8px 14px; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-family: inherit;
+  }
+  .filter-list .close-btn:hover { background: white; border-color: var(--ink-soft); color: var(--ink); }
+  .filter-list .projects { gap: 10px; }
+  .filter-list .project .axis-chip {
+    grid-column: 1 / -1; font-size: 10px; padding: 2px 8px; border-radius: 8px;
+    text-transform: uppercase; letter-spacing: .6px; color: white; font-weight: 600;
+    justify-self: start; margin-top: 4px;
+  }
+  .filter-list .project .axis-chip.rd          { background: var(--cg-olive-deep); }
+  .filter-list .project .axis-chip.ventes      { background: var(--pretto-green); }
+  .filter-list .project .axis-chip.marketing   { background: var(--marketing); color: white; }
+  .filter-list .project .axis-chip.recrutement { background: var(--recrut); }
+  .filter-list .project .axis-chip.decide      { background: var(--danger); }
 
   /* ----- 4 main axes grid ----- */
   .axes {
@@ -596,6 +625,16 @@ let state = {
   sort: 'priority',
   hideZombies: false,
   openAxis: null,
+  filterStat: null, // 'total' | 'wip' | 'hot' | 'decide' | 'avg' | null
+};
+
+/* Définitions des filtres stat */
+const STAT_FILTERS = {
+  total:  { label: 'Tous les projets',           sub: "L'inventaire complet, axes confondus.",        match: p => true,                                                               sort: (a, b) => a.priority - b.priority || b.progress - a.progress },
+  wip:    { label: 'Projets en cours',            sub: 'Activement travaillés (status: wip).',         match: p => p.status === 'wip',                                                 sort: (a, b) => b.progress - a.progress },
+  hot:    { label: 'Projets HOT',                 sub: 'Priorité immédiate, taggés HOT.',              match: p => (p.tags || []).includes('HOT'),                                     sort: (a, b) => a.priority - b.priority || b.progress - a.progress },
+  decide: { label: 'À trancher',                  sub: 'Zombies + zone décision. À finir ou archiver.', match: p => p.axis === 'decide' || p.status === 'zombie',                       sort: (a, b) => a.name.localeCompare(b.name, 'fr') },
+  avg:    { label: 'Tous, triés par avancement',  sub: 'Du plus avancé au moins avancé.',              match: p => true,                                                               sort: (a, b) => b.progress - a.progress },
 };
 
 function statusTag(p) {
@@ -612,14 +651,94 @@ function renderStats() {
   const hot = all.filter(p => (p.tags || []).includes('HOT')).length;
   const avg = Math.round(all.reduce((s, p) => s + p.progress, 0) / all.length);
   const finished = all.filter(p => p.progress >= 100).length;
+  const active = id => state.filterStat === id ? 'active' : '';
 
   $('#stats').innerHTML = `
-    <div class="stat"><div class="label">Projets total</div><div class="value">${all.length}</div><div class="sub">sur 4 axes + décision</div></div>
-    <div class="stat" style="border-left-color: var(--cg-olive-deep)"><div class="label">En cours</div><div class="value">${wip}</div><div class="sub">activement travaillés</div></div>
-    <div class="stat" style="border-left-color: var(--warn)"><div class="label">Hot</div><div class="value">${hot}</div><div class="sub">priorité immédiate</div></div>
-    <div class="stat" style="border-left-color: var(--danger)"><div class="label">À trancher</div><div class="value">${zombies}</div><div class="sub">zombies / à décider</div></div>
-    <div class="stat" style="border-left-color: var(--pretto-green)"><div class="label">Avancement moyen</div><div class="value">${avg}%</div><div class="sub">${finished} terminés</div></div>
+    <div class="stat ${active('total')}" data-stat="total"><div class="label">Projets total</div><div class="value">${all.length}</div><div class="sub">sur 4 axes + décision</div></div>
+    <div class="stat ${active('wip')}" data-stat="wip" style="border-left-color: var(--cg-olive-deep)"><div class="label">En cours</div><div class="value">${wip}</div><div class="sub">activement travaillés</div></div>
+    <div class="stat ${active('hot')}" data-stat="hot" style="border-left-color: var(--warn)"><div class="label">Hot</div><div class="value">${hot}</div><div class="sub">priorité immédiate</div></div>
+    <div class="stat ${active('decide')}" data-stat="decide" style="border-left-color: var(--danger)"><div class="label">À trancher</div><div class="value">${zombies}</div><div class="sub">zombies / à décider</div></div>
+    <div class="stat ${active('avg')}" data-stat="avg" style="border-left-color: var(--pretto-green)"><div class="label">Avancement moyen</div><div class="value">${avg}%</div><div class="sub">${finished} terminés</div></div>
   `;
+
+  $$('.stat').forEach(el => el.addEventListener('click', () => {
+    const id = el.dataset.stat;
+    state.filterStat = state.filterStat === id ? null : id;
+    renderStats();
+    renderMain();
+  }));
+}
+
+function renderFilterList() {
+  const f = STAT_FILTERS[state.filterStat];
+  if (!f) return '';
+  const q = state.search.toLowerCase().trim();
+  const items = PROJECTS
+    .filter(f.match)
+    .filter(p => !q || [p.name, p.description, p.next, ...(p.tags||[])].join(' ').toLowerCase().includes(q))
+    .sort(f.sort);
+
+  const axisLabel = a => AXES[a]?.title_short || a;
+
+  return `
+    <section class="filter-list">
+      <div class="filter-list-head">
+        <div>
+          <h2>${f.label} <span style="color:var(--muted);font-weight:500">— ${items.length}</span></h2>
+          <div class="sub">${f.sub}</div>
+        </div>
+        <button class="close-btn" id="closeFilter">× Retour aux axes</button>
+      </div>
+      <div class="projects">
+        ${items.length
+          ? items.map(p => projectCardWithAxis(p)).join('')
+          : '<div style="color:var(--muted);font-size:13px;padding:8px 4px">Aucun projet ne matche.</div>'
+        }
+      </div>
+    </section>
+  `;
+}
+
+function projectCardWithAxis(p) {
+  // Variante de projectCard qui inclut le chip d'axe (pour la liste filtrée transverse)
+  const st = statusTag(p);
+  const axisName = AXES[p.axis]?.title_short || p.axis;
+  const tags = [
+    `<span class="axis-chip ${p.axis}">${axisName}</span>`,
+    ...(st ? [`<span class="tag ${st.cls}">${st.label}</span>`] : []),
+    ...(p.tags || []).map(t => {
+      if (t === 'HOT') return `<span class="tag hot">hot</span>`;
+      if (t === 'ZOMBIE') return `<span class="tag zombie">zombie</span>`;
+      return `<span class="tag">${t}</span>`;
+    }),
+  ].join('');
+  return `
+    <div class="project" data-id="${p.id}">
+      <div class="name">${p.name}</div>
+      <div class="pct">${p.progress}%</div>
+      <div class="next">${p.next}</div>
+      <div class="bar"><span style="width:${p.progress}%"></span></div>
+      <div class="tags">${tags}</div>
+    </div>`;
+}
+
+/* Coordination : axes OU liste filtrée */
+function renderMain() {
+  if (state.filterStat) {
+    $('#axes').innerHTML = renderFilterList();
+    $$('.project').forEach(el => el.addEventListener('click', e => {
+      e.stopPropagation();
+      openModal(el.dataset.id);
+    }));
+    const closeBtn = $('#closeFilter');
+    if (closeBtn) closeBtn.addEventListener('click', () => {
+      state.filterStat = null;
+      renderStats();
+      renderMain();
+    });
+  } else {
+    renderAxes();
+  }
 }
 
 function projectCard(p) {
@@ -751,19 +870,19 @@ function closeModal() { $('#overlay').classList.remove('open'); }
 $('#overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-$('#search').addEventListener('input', e => { state.search = e.target.value; renderAxes(); });
-$('#sortBy').addEventListener('change', e => { state.sort = e.target.value; renderAxes(); });
+$('#search').addEventListener('input', e => { state.search = e.target.value; renderMain(); });
+$('#sortBy').addEventListener('change', e => { state.sort = e.target.value; renderMain(); });
 $('#toggleZombies').addEventListener('click', e => {
   state.hideZombies = !state.hideZombies;
   e.target.textContent = state.hideZombies ? 'Montrer les zombies' : 'Cacher les zombies';
-  renderAxes();
+  renderMain();
 });
 
 const d = new Date();
 $('#todayDate').textContent = d.toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
 renderStats();
-renderAxes();
+renderMain();
 
 /* ============================================================
    WIZARD "Par quoi je commence ?"
