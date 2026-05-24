@@ -555,12 +555,19 @@ const PROJECTS = [
     tags: ['HOT'],
   },
   {
-    id: 'lead-gen-meta-ads', axis: 'ventes', priority: 2, progress: 15, status: 'wip',
+    id: 'lead-gen-meta-ads', axis: 'ventes', priority: 1, progress: 45, status: 'wip',
     name: 'Lead-gen équipe (CPL Meta Ads)',
-    next: "Soumettre App Review Meta + récupérer Ad Account ID pour débloquer le MCP Ads",
-    description: "Vente au lead qualifié aux courtiers Galaxie via Meta Lead Ads + visuels Canva. Cadré 2026-05-23. Pilote 1 courtier d'abord. Bloqué : App Review Meta + Ad Account ID. Dossier lead-gen-equipe/.",
+    next: "Élodie livre 5 visuels (BRIEF-ELODIE-VISUELS-PILOTE.md) + Christophe régénère le token Meta avec les nouveaux scopes → lancer pilote sur Christophe",
+    description: "Vente au lead qualifié aux courtiers Galaxie via Meta Lead Ads. Cadré 2026-05-23. Pilote = Christophe lui-même. Ad Account act_1062376615090773 + permissions ads_management/ads_read/leads_retrieval/pages_manage_ads toutes en 'Prête pour le test' (dev mode, App Review reportée post-pilote). MCP Ads en cours de dev. Canva API reportée. Dossier lead-gen-equipe/.",
     memory: 'memory/project_offre_lead_gen_equipe.md',
-    tags: ['HOT', 'bloqué'],
+    tags: ['HOT'],
+  },
+  {
+    id: 'click-and-docs-100k', axis: 'rd', priority: 2, progress: 80, status: 'wip',
+    name: 'Click and Docs 100K (tri-docs)',
+    next: "Tester avec un vrai dossier client lourd (multi-PDF, scans) et ajuster la convention de nommage selon les retours",
+    description: "Outil IA qui prend un dossier de pièces clients en vrac, identifie chaque doc, sépare les PDFs multi-docs, et rend un ZIP nommé à la convention courtage Pretto Galaxie. Stack : front HTML (surge) + Cloudflare Worker + Claude API. Live à click-and-docs-100k.surge.sh + Worker tri-docs-api.christophebypretto.workers.dev. Construit dans la nuit du 23→24/05.",
+    tags: ['HOT', 'tout neuf'],
   },
 
   /* ---------- À décider — finir ou abandonner ---------- */
