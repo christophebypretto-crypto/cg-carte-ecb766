@@ -415,6 +415,14 @@ const PROJECTS = [
     memory: 'memory/project_jarvis_assistant.md',
     tags: ['long terme'],
   },
+  {
+    id: 'previsionnel-apollo', axis: 'rd', priority: 1, progress: 40, status: 'wip',
+    name: 'Prévisionnel CA conseillers (extension Apollo)',
+    next: "Tester l'extension démo sur l'Apollo de Christophe, valider le shape JSON de l'API, puis lancer Phase 2b (backend Cloudflare)",
+    description: "Extension Chrome MV3 qui lit le pipeline Apollo (Finspot) et affiche le CA prévisionnel mensuel. Phase 0+1 OK, extension démo livrée dans previsionnel-conseillers/extension/.",
+    memory: 'memory/project_previsionnel_conseillers.md',
+    tags: ['HOT', 'Package 100K'],
+  },
 
   /* ---------- Ventes ---------- */
   {
@@ -426,11 +434,11 @@ const PROJECTS = [
     tags: ['HOT'],
   },
   {
-    id: 'fiche-google-saintdenis', axis: 'ventes', priority: 2, progress: 0, status: 'idea',
-    name: 'Fiche établissement Google Saint-Denis',
-    next: "Créer la fiche Google Business Profile et la connecter au site",
-    description: "Nouvel établissement Saint-Denis à référencer.",
-    tags: [],
+    id: 'fiches-google-equipe', axis: 'ventes', priority: 2, progress: 60, status: 'wip',
+    name: 'Fiches Google Business Profile équipe',
+    next: "En attente des 3 réponses de Réjinal (tel, type fiche, compte Owner) — mail envoyé depuis contact@team100k.fr le 25/05 vers 02:00",
+    description: "Industrialisation des fiches GBP pour les courtiers Pretto Galaxie. Compte centralisateur Team 100K (contact@team100k.fr) opérationnel. Pilote équipe = Réjinal Deravine : tout le contenu fiche déjà rédigé dans courtiers/rejinal-deravine/GBP-content.md. Mail brief envoyé à Réjinal le 25/05 depuis contact@team100k.fr via Zimbra OVH, en attente de retour. Fiche perso Christophe reste chez Simplébo jusqu'à fin contrat.",
+    tags: ['HOT', 'package-100k'],
   },
   {
     id: 'bdd-banques-galaxie', axis: 'ventes', priority: 2, progress: 80, status: 'wip',
@@ -507,8 +515,15 @@ const PROJECTS = [
     id: 'mentoring-equipe-galaxie', axis: 'recrutement', priority: 2, progress: 25, status: 'wip',
     name: 'Mentoring équipe Pretto Galaxie',
     next: "Identifier les 2-3 courtiers à mentorer en priorité (au-delà de Réjinal/Maude)",
-    description: "Mentoring courtiers de l'équipe Pretto Galaxie — utiliser le Package 100K comme support.",
+    description: "Mentoring courtiers de l'équipe Pretto Galaxie — utiliser le Package 100K comme support. Outil de suivi : dashboard-mentoring-2-0.surge.sh.",
     tags: [],
+  },
+  {
+    id: 'apollo-stats', axis: 'recrutement', priority: 2, progress: 80, status: 'wip',
+    name: 'Apollo Stats — suivi évolution équipe',
+    next: "Re-snapshoter chaque mois (./apollo-stats/refresh.sh) pour construire l'historique d'évolution par membre",
+    description: "Page web qui présente stats par mandataire de l'org (dossiers Immo, mandats, RAC, CAPP) extraites du dashboard Apollo Développement via Playwright + OCR Gemini 2.5. Live à dashboard-mentoring-2-0.surge.sh. Snapshot 1 = 2026-05-24.",
+    tags: ['outil de suivi'],
   },
   {
     id: 'recrutement-cibles', axis: 'recrutement', priority: 3, progress: 0, status: 'idea',
@@ -577,11 +592,10 @@ const PROJECTS = [
     tags: ['Macles'],
   },
   {
-    id: 'simulateur-mandataire', axis: 'recrutement', priority: 1, progress: 85, status: 'wip',
+    id: 'simulateur-mandataire', axis: 'recrutement', priority: 3, progress: 100, status: 'done',
     name: 'Simulateur revenus mandataire',
-    next: "Pousser sur LinkedIn / sourcing avec tracking pour mesurer le taux de candidatures",
-    description: "Combien gagne un mandataire courtier Galaxie ? Simule CA, charges, commissions nettes selon statut juridique. Modèle 2026. Live à simulateur-mandataire-pretto.surge.sh. Outil clé pour le recrutement.",
-    tags: ['HOT'],
+    next: "Outil au repos — y revenir si besoin (CTA d'écran retiré, paliers 2026 à jour). Live à simulateur-mandataire-pretto.surge.sh.",
+    description: "Combien gagne un mandataire courtier Galaxie ? Simule CA, charges, commissions nettes selon statut juridique. Modèle 2026. Live à simulateur-mandataire-pretto.surge.sh.",
   },
   {
     id: 'lead-gen-meta-ads', axis: 'ventes', priority: 1, progress: 45, status: 'wip',
@@ -592,11 +606,26 @@ const PROJECTS = [
     tags: ['HOT'],
   },
   {
+    id: 'plan-financement-100k', axis: 'rd', priority: 1, progress: 92, status: 'wip',
+    name: 'Plan de financement (mieux que Zou)',
+    next: "Tester sur de vraies fiches Zou + affiner le mapping d'import ; envisager l'option « vrai Google Doc » (Apps Script) en plus du .docx",
+    description: "Outil web qui génère une étude de financement client à la charte Pretto Galaxie, bien plus soignée que le PDF figé de Zou : synthèse client en tête, recalcul live (frais, taux d'endettement, tableau d'amortissement), options d'affichage à cocher/décocher (taux, banque, assurance, échéancier, patrimoine…), export en Google Doc modifiable (.docx). Lancé en 1 clic depuis l'onglet Fiche Zou de l'extension Écosystème 3.0. Live à plan-financement-100k.surge.sh.",
+    tags: ['HOT', 'tout neuf'],
+  },
+  {
     id: 'click-and-docs-100k', axis: 'rd', priority: 2, progress: 80, status: 'wip',
     name: 'Click and Docs 100K (tri-docs)',
     next: "Tester avec un vrai dossier client lourd (multi-PDF, scans) et ajuster la convention de nommage selon les retours",
     description: "Outil IA qui prend un dossier de pièces clients en vrac, identifie chaque doc, sépare les PDFs multi-docs, et rend un ZIP nommé à la convention courtage Pretto Galaxie. Stack : front HTML (surge) + Cloudflare Worker + Claude API. Live à click-and-docs-100k.surge.sh + Worker tri-docs-api.christophebypretto.workers.dev. Construit dans la nuit du 23→24/05.",
     tags: ['HOT', 'tout neuf'],
+  },
+
+  {
+    id: 'calendly-team', axis: 'recrutement', priority: 2, progress: 5, status: 'idea',
+    name: 'Calendly Teams équipe Galaxie',
+    next: "Proposer à Frédéric & Grégory (co-mentors) de monter un plan Teams partagé sur le budget mentors, puis inviter les courtiers via MCP",
+    description: "Plan Calendly Teams (~16$/siège/mois) pour piloter centralement les Calendly de toute l'équipe Galaxie. Permet : créer les comptes Calendly des membres et les contrôler via MCP (event types, dispos, liens), générer des prises de RDV directement depuis les sites internet courtiers et les campagnes Meta Ads (lien lead-gen-meta-ads). Subtilité : coût mutualisé entre les 3 mentors (Frédéric, Grégory, Christophe) — il faut leur vendre les avantages avant. Chaque courtier doit juste connecter son Google Calendar (OAuth, 3 min de leur côté), le reste est pilotable par API.",
+    tags: ['à proposer Frédéric+Grégory', 'budget mentors'],
   },
 
   /* ---------- À décider — finir ou abandonner ---------- */
