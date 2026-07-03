@@ -354,10 +354,10 @@
 const PROJECTS = [
   /* ---------- R&D avec Claude Code ---------- */
   {
-    id: 'annote-releves', axis: 'rd', priority: 2, progress: 90, status: 'wip',
+    id: 'annote-releves', axis: 'rd', priority: 2, progress: 95, status: 'wip',
     name: 'Annote Relevés (relevés bancaires surlignés)',
-    next: "Tester sur de vrais relevés clients (LCL, BNP, CE…) et affiner les règles de détection",
-    description: "Surligne par couleur les opérations des relevés PDF (salaire, loyer, crédits, épargne, CAF, ATD, notaire…) avec étiquettes modifiables, détection auto, export PDF annoté pour la banque. 100% navigateur. Live : annote-releves-propulse.surge.sh.",
+    next: "Utiliser en production sur les dossiers en cours et remonter les libellés ratés",
+    description: "Surligne par couleur les opérations des relevés PDF (salaire, loyer, crédits, épargne, CAF, ATD, notaire…) avec étiquettes modifiables, détection auto entraînée sur 58 vrais relevés de 14 banques, OCR local pour les scans, export PDF annoté pour la banque. 100% navigateur. Live : annote-releves-propulse.surge.sh.",
     memory: 'memory/project_annote_releves.md',
     tags: ['nouveau'],
   },
