@@ -370,11 +370,11 @@ const PROJECTS = [
     tags: ['HOT', 'pilote Réjinal+Maude'],
   },
   {
-    id: 'formation-100k', axis: 'rd', priority: 1, progress: 30, status: 'wip',
+    id: 'formation-100k', axis: 'rd', priority: 3, progress: 30, status: 'zombie',
     name: 'Formation 100K',
-    next: "Décider : finir le module 1 cette semaine ou re-scoper",
-    description: "Formation associée au Package 100K. Mentionnée comme chantier qui traîne — risque zombie.",
-    tags: ['HOT', 'risque enlisement'],
+    next: "Passée zombie le 12/07 (aucun arbitrage depuis le 14/06, malgré les briefs des 22, 24, 25, 28/06 et 05/07). Dire « on relance la formation » pour la réveiller et re-scoper le module 1 en version minimale.",
+    description: "Formation associée au Package 100K. Gelée le 12/07 pour ne plus fausser la lecture du dashboard — réversible à tout moment.",
+    tags: ['gelé volontairement'],
   },
   {
     id: 'simulateurs-myriam', axis: 'rd', priority: 2, progress: 95, status: 'wip',
@@ -424,12 +424,28 @@ const PROJECTS = [
     tags: ['long terme'],
   },
   {
-    id: 'previsionnel-apollo', axis: 'rd', priority: 1, progress: 40, status: 'wip',
-    name: 'Prévisionnel CA conseillers (extension Apollo)',
-    next: "Tester l'extension démo sur l'Apollo de Christophe, valider le shape JSON de l'API, puis lancer Phase 2b (backend Cloudflare)",
-    description: "Extension Chrome MV3 qui lit le pipeline Apollo (Finspot) et affiche le CA prévisionnel mensuel. Phase 0+1 OK, extension démo livrée dans previsionnel-conseillers/extension/.",
+    id: 'previsionnel-apollo', axis: 'rd', priority: 1, progress: 80, status: 'wip',
+    name: 'Extension Apollo : prévisionnel CA + gestion des priorités',
+    next: "Publier la version FREE (build-free.sh) sur le Chrome Web Store et arbitrer le contenu PRO (Gestion des priorités actée ; Middle Office selon tarif)",
+    description: "Extension Chrome MV3 « Team Propulse by Pretto » v0.9.53 (12 bumps du 06 au 10/07) : CA prévisionnel + Gestion des priorités (une carte par dossier, brouillons Gmail, veille « À jour »), tableau d'amortissement IRA + charte courtier, plan de financement pré-rempli, sécurité anti-usurpation getVerifiedBrokerSlug. Séparation PRO/FREE actée avec Grégory : build-free.sh génère la version gratuite Chrome Web Store (page confidentialité prête).",
     memory: 'memory/project_previsionnel_conseillers.md',
     tags: ['HOT', 'Package 100K'],
+  },
+  {
+    id: 'middle-office-ia', axis: 'rd', priority: 1, progress: 75, status: 'wip',
+    name: 'Middle Office IA — suivi des expertises',
+    next: "Faire tourner sur les dossiers de la semaine + décider de son inclusion dans l'extension PRO (selon tarif)",
+    description: "Super assistant middle office (rôle ex-Mostafa) : suivi des dossiers en expertise (pièces reçues/manquantes, alertes cochables, synthèse rouge), plan de journée auto (RDV agenda intégrés), ordre d'attaque par priorité, auto-répondeur IA (brouillons Gmail, jamais d'envoi) + tri des mails. App locale localhost:4750 ; démo publique (données fictives) : middle-office-demo-cg.surge.sh (publiée 12/07).",
+    memory: 'memory/project_middle_office_ia.md',
+    tags: ['HOT', 'tout neuf'],
+  },
+  {
+    id: 'simulateur-lead-meta', axis: 'ventes', priority: 1, progress: 85, status: 'wip',
+    name: 'Simulateur pré-qualif leads Meta',
+    next: "Poser le bouton d'écran de fin Meta + lien pré-rempli dans le Zap Réjinal + clé Web3Forms de Réjinal (option : route Apollo /enrich-simulation)",
+    description: "Parcours de pré-qualification post-formulaire Meta calqué sur le funnel Pretto : ~22 écrans 100 % clic, feu 🟢🟠🔴 + capacité, envoi auto au courtier (Web3Forms, double destinataire ?w3f2=), RDV par courtier ?rdv=. Retours du pilote Réjinal intégrés le 10/07. Live à simulateur-projet-cg.surge.sh.",
+    memory: 'memory/project_simulateur_lead_meta.md',
+    tags: ['HOT', 'tout neuf'],
   },
 
   /* ---------- Ventes ---------- */
